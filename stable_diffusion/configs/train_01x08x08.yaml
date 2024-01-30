@@ -110,7 +110,7 @@ data:
       train:
         target: ldm.data.webdatasets.build_dataloader
         params:
-          urls: /datasets/laion-400m/webdataset-moments-filtered/{00000..00831}.tar
+          urls: /opt/dev/datasets/laion-400m/webdataset-moments-filtered/{00000..00001}.tar
           batch_size: 8
           shuffle: 1000
           partial: False
@@ -121,7 +121,7 @@ data:
       validation:
         target: ldm.data.tsv.build_dataloader
         params:
-          annotations_file: "/datasets/coco2014/val2014_30k.tsv"
+          annotations_file: "opt/dev/datasets/coco2014/val2014_30k.tsv"
           keys: ["image_id", "id", "caption"]
           batch_size: 8
           shuffle: False
