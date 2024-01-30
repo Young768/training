@@ -136,6 +136,8 @@ class DDPM(pl.LightningModule):
             self.monitor = monitor
         self.make_it_fit = make_it_fit
         self.ckpt = ckpt
+        ##not using ckpt
+        self.ckpt = None
         self.load_vae = load_vae
         self.load_unet = load_unet
         self.load_encoder = load_encoder
@@ -465,7 +467,7 @@ class DDPM(pl.LightningModule):
                                   return_intermediates=return_intermediates)
 
     def q_sample(self, x_start, t, noise=None):
-        noise = default(noise, lambda: torch.randn_like(x_start))
+        noise = default(noise, lambda x_start=x_start: torch.randn_like(x_start))
         return (extract_into_tensor(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start +
                 extract_into_tensor(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape) * noise)
 
@@ -753,8 +755,8 @@ class LatentDiffusion(DDPM):
             self.register_buffer('scale_factor', torch.tensor(scale_factor))
         self.first_stage_config = first_stage_config
         self.cond_stage_config = cond_stage_config
-        self.instantiate_first_stage(first_stage_config)
-        self.instantiate_cond_stage(cond_stage_config)
+        #self.instantiate_first_stage(first_stage_config)
+        #self.instantiate_cond_stage(cond_stage_config)
         self.cond_stage_forward = cond_stage_forward
         self.clip_denoised = False
         self.bbox_tokenizer = None
@@ -792,8 +794,8 @@ class LatentDiffusion(DDPM):
         if self.ucg_training:
             self.ucg_prng = np.random.RandomState()
 
-        self.instantiate_first_stage(self.first_stage_config)
-        self.instantiate_cond_stage(self.cond_stage_config)
+        #self.instantiate_first_stage(self.first_stage_config)
+        #self.instantiate_cond_stage(self.cond_stage_config)
         if self.ckpt is not None:
             self.init_from_ckpt(self.ckpt, ignore_keys=self.ignore_keys,
                                 load_vae=self.load_vae, load_encoder=self.load_encoder, load_unet=self.load_unet)
@@ -1672,9 +1674,12 @@ class DiffusionWrapper(pl.LightningModule):
         self.sequential_cross_attn = diff_model_config.pop("sequential_crossattn", False)
         self.diffusion_model = instantiate_from_config(diff_model_config)
         self.conditioning_key = conditioning_key
+        #self.conditioning_key = None
         assert self.conditioning_key in [None, 'concat', 'crossattn', 'hybrid', 'adm', 'hybrid-adm', 'crossattn-adm']
 
     def forward(self, x, t, c_concat: list = None, c_crossattn: list = None, c_adm=None):
+        out = self.diffusion_model(x, t)
+        return out
         if self.conditioning_key is None:
             out = self.diffusion_model(x, t)
         elif self.conditioning_key == 'concat':
