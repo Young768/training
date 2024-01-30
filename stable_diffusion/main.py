@@ -664,7 +664,11 @@ if __name__ == "__main__":
         signal.signal(signal.SIGUSR2, divein)
 
         mllogger.end(mllog_constants.INIT_STOP)
-
+        import thunder
+        from thunder.executors.sdpaex import sdpa_ex
+        executors = [sdpa_ex, thunder.nvfuser_executor, thunder.pytorch_executor]
+        c_model = thunder.compile(model, executors_list=executors)
+        
         # Run the training and validation
         if opt.mode=="train":
             try:
