@@ -671,8 +671,8 @@ if __name__ == "__main__":
             from thunder.executors.sdpaex import sdpa_ex
             #executors = [sdpa_ex, thunder.nvfuser_executor, thunder.pytorch_executor]
             c_model = thunder.compile(model)
-            out = c_model(data)
-            print(thunder.last_traces(c_model)[-1])
+            #out = c_model(data)
+            #print(thunder.last_traces(c_model)[-1])
 
         # Run the training and validation
         if opt.mode=="train":
