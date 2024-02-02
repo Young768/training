@@ -670,6 +670,12 @@ if __name__ == "__main__":
             import thunder
             from thunder.executors.sdpaex import sdpa_ex
             #executors = [sdpa_ex, thunder.nvfuser_executor, thunder.pytorch_executor]
+            def examine_backend(gm, example_inputs):
+                from thunder.examine import examine
+                examine(gm, *example_inputs)
+                return gm
+
+            model = torch.compile(model, fullgraph=False, backend=examine_backend)
             c_model = thunder.compile(model)
             #out = c_model(data)
             #print(thunder.last_traces(c_model)[-1])
