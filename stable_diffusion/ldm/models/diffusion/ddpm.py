@@ -756,7 +756,7 @@ class LatentDiffusion(DDPM):
         self.first_stage_config = first_stage_config
         self.cond_stage_config = cond_stage_config
         self.instantiate_first_stage(first_stage_config)
-        #self.instantiate_cond_stage(cond_stage_config)
+        self.instantiate_cond_stage(cond_stage_config)
         self.cond_stage_forward = cond_stage_forward
         self.clip_denoised = False
         self.bbox_tokenizer = None
@@ -795,7 +795,7 @@ class LatentDiffusion(DDPM):
             self.ucg_prng = np.random.RandomState()
 
         self.instantiate_first_stage(self.first_stage_config)
-        #self.instantiate_cond_stage(self.cond_stage_config)
+        self.instantiate_cond_stage(self.cond_stage_config)
         if self.ckpt is not None:
             self.init_from_ckpt(self.ckpt, ignore_keys=self.ignore_keys,
                                 load_vae=self.load_vae, load_encoder=self.load_encoder, load_unet=self.load_unet)
